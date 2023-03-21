@@ -3,19 +3,33 @@ import EditGrid from './components/edit-grid/EditGrid'
 import Grid from './components/grid/Grid'
 import IGrid from './config/interfaces/IGrid'
 import ISpace from './config/interfaces/ISpace'
+import EditingInfo from './config/interfaces/IEditingInfo'
 import './app.css'
+import bfs from './algorithm/bfs'
+
+const defaultEditInfo : EditingInfo = {
+  editing: false,
+  notify: null,
+  mode: "blocker"
+}
 
 function App() {
   const [grid, setGrid] = useState<IGrid | null>(null)
-  const [editing, setEditing] = useState(false)
+  const [editingInfo, setEditingInfo] = useState<EditingInfo>(defaultEditInfo)
 
   useEffect(() => {
     generateBaseGrid(10, 10);
   },[])
 
   const toggleEditing = () => {
-    if(editing === true) setEditing(editing => false)
-    else setEditing(editing => true)
+    if(editingInfo.editing === true) setEditingInfo({
+      ...editingInfo,
+      editing: false
+    })
+    else setEditingInfo({
+      ...editingInfo,
+      editing: true
+    })
   }
 
   const generateBaseGrid = (rows: number, cols: number) => {
@@ -29,7 +43,7 @@ function App() {
           row: r,
           col: c,
           id: r + c,
-          blocked: false
+          blocked: false,
         }
         row.push(newSpace)
       }
@@ -38,22 +52,33 @@ function App() {
     }
 
     const newGrid : IGrid = {
-      start: 0,
-      end: 0,
-      rowsAmount: 10,
-      colsAmount: 10,
+      start: [0, 0],
+      end: [rows - 1, cols - 1],
+      rowsAmount: rows,
+      colsAmount: cols,
       rows: generatedRows
     }
 
     setGrid(grid => newGrid)
   }
 
+  const addColumn = () => {
+    if(grid != null) {
+      
+    }
+  }
+
+
+  const findPath = () => {
+    if (grid) console.log(bfs(grid))
+  }
+
+
   return (
     <div className="App">
-      {editing ? <EditGrid grid={grid} setEditing={setEditing} /> : <button onClick={toggleEditing}>Edit</button>}
-      <button>Find Path</button>
-
-      <Grid grid={grid}/>
+      {editingInfo.editing ? <EditGrid grid={grid} setEditing={setEditingInfo} editingInfo={editingInfo} setGrid={setGrid} /> : <button onClick={toggleEditing}>Edit</button>}
+      { grid && <Grid grid={grid} editingInfo={editingInfo}/> }
+      {(grid && !editingInfo.editing) && <button onClick={findPath}>Find Path</button>}
     </div>
   )
 }

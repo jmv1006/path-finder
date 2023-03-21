@@ -1,8 +1,8 @@
 import ISpace from "./ISpace";
 
 interface IGrid {
-    start: number,
-    end: number,
+    start: Array<number>,
+    end: Array<number>,
     rowsAmount: number, 
     colsAmount: number,
     rows: Array<Array<ISpace>>
