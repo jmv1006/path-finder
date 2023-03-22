@@ -1,9 +1,8 @@
 
-.header {
-    width: 100%;
-    height: 3rem;
+.gridLayout {
     display: flex;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
-    font-size: 2rem;
+    gap: 1rem;
 }

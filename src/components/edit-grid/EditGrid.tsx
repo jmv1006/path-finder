@@ -81,12 +81,18 @@ const EditGrid = ({ grid, setEditing, editingInfo, setGrid, generateGrid } : Edi
 
     const regenerateGrid = (e: any) => {
         e.preventDefault();
+        if(gridDimensions.w > 25 || gridDimensions.h > 25) {
+            alert("Maximum Grid Dimensions are 25 x 25")
+            return
+        }
+
         setDimensionsBeingEdited(dimensionsBeingEdited => false)
         generateGrid(gridDimensions.h, gridDimensions.w)
     }
 
     const handleChange = (e: any) => {
         const value = e.target.value;
+
         setGridDimensions({
             ...gridDimensions,
             [e.target.name]: parseInt(value)

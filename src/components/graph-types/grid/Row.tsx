@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react"
-import EditingInfo from "../../config/interfaces/IEditingInfo"
-import IGrid from "../../config/interfaces/IGrid"
-import ISpace from "../../config/interfaces/ISpace"
+import EditingInfo from "../../../config/interfaces/IEditingInfo"
+import IGrid from "../../../config/interfaces/IGrid"
+import ISpace from "../../../config/interfaces/ISpace"
 import './grid.css'
 import Space from "./Space"
 
