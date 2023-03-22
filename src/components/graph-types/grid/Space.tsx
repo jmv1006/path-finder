@@ -18,7 +18,14 @@ const Space = ( { spaceInfo, editingInfo, grid } : SpacePropTypes) => {
         handleStartEnd()
     }, [grid.start, grid.end])
 
-    const notifyEdit = () => {
+    const notifyEditClick = () => {
+        if(editingInfo.mouseEventType == "hover") return
+        if (!editingInfo.notify || !editingInfo.editing) return;
+        editingInfo.notify(spaceInfo.row, spaceInfo.col, editingInfo.mode)
+    }
+
+    const notifyEditHover = () => {
+        if(editingInfo.mouseEventType == "click") return
         if (!editingInfo.notify || !editingInfo.editing) return;
         editingInfo.notify(spaceInfo.row, spaceInfo.col, editingInfo.mode)
     }
@@ -43,10 +50,10 @@ const Space = ( { spaceInfo, editingInfo, grid } : SpacePropTypes) => {
                 <div className="spacePath" />
                 :
                 <>
-                    {spaceInfo.blocked && <div className="spaceBlocked" onClick={notifyEdit} />}
-                    {isStart && <div className="spaceStart" onClick={notifyEdit} />}
-                    {isEnd && <div className="spaceEnd" onClick={notifyEdit} />}
-                    {(!spaceInfo.blocked && !isStart && !isEnd) && <div className="space" onClick={notifyEdit} />}
+                    {spaceInfo.blocked && <div className="spaceBlocked" onClick={notifyEditClick} />}
+                    {isStart && <div className="spaceStart" onClick={notifyEditClick} onMouseOver={notifyEditHover}/>}
+                    {isEnd && <div className="spaceEnd" onClick={notifyEditClick} onMouseOver={notifyEditHover}/>}
+                    {(!spaceInfo.blocked && !isStart && !isEnd) && <div className="space" onClick={notifyEditClick} onMouseOver={notifyEditHover} />}
                 </>
             }
         </>

@@ -2,10 +2,12 @@ import GridLayout from '../layouts/grid/GridLayout'
 import Header from '../components/header/Header'
 import './app.css'
 import { useState } from 'react'
-import WeightedGraph from '../layouts/weighted/WeightedGraph'
 import NavBar from '../components/nav-bar/NavBar'
+import Footer from '../components/footer/footer'
+import WeightedGraphLayout from '../layouts/weighted/WeightedGraphLayout'
 
 const modes = ["grid", "weighted"]
+
 function App() {
   const [mode, setMode] = useState("grid")
 
@@ -16,9 +18,12 @@ function App() {
   return (
     <div className="App">
       <Header />
-      <NavBar modes={modes} selected={mode} setSelected={setSelectedMode}/>
-      {mode == "grid" && <GridLayout />}
-      {mode == "weighted" && <WeightedGraph />}
+      <div className='mainContentContainer'>
+        <NavBar modes={modes} selected={mode} setSelected={setSelectedMode}/>
+        {mode == "grid" && <GridLayout />}
+        {mode == "weighted" && <WeightedGraphLayout />}
+      </div>
+      <Footer />
     </div>
   )
 }

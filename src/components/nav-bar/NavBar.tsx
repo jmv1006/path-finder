@@ -8,7 +8,7 @@ type NavBarProps = {
 
 const NavBar = ({ modes, selected, setSelected } : NavBarProps) => {
     const mappedModes = modes.map((mode: String) =>
-        <button onClick={() => setSelected(mode)}>{mode}</button>
+        <div key={mode.length} onClick={() => setSelected(mode)}>{mode}</div>
     )
 
     return(

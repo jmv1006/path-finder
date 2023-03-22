@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react"
-import EditingInfo from "../../config/interfaces/IEditingInfo";
-import IGrid from "../../config/interfaces/IGrid"
+import EditingInfo from "../../../../config/interfaces/IEditingInfo";
+import IGrid from "../../../../config/interfaces/IGrid"
+import randomizeWalls from "../../../../helpers/randomizeWalls";
 import './editgrid.css'
 
 type EditGridProps = {
@@ -8,12 +9,13 @@ type EditGridProps = {
     setEditing: Function,
     editingInfo: EditingInfo,
     setGrid: Function,
-    generateGrid: (rows: number, cols: number) => void
+    generateGrid: (rows: number, cols: number) => void,
+    resetGrid: (removeWalls: boolean) => void
 }
 
 const editOptions = ["blocker", "start", "end"];
 
-const EditGrid = ({ grid, setEditing, editingInfo, setGrid, generateGrid } : EditGridProps) => {
+const EditGrid = ({ grid, setEditing, editingInfo, setGrid, generateGrid, resetGrid } : EditGridProps) => {
     const [editMode, setEditMode] = useState("blocker")
     const [gridDimensions, setGridDimensions] = useState({w: grid?.colsAmount, h: grid?.rowsAmount})
     const [dimensionsBeingEdited, setDimensionsBeingEdited] = useState(false);
@@ -108,17 +110,28 @@ const EditGrid = ({ grid, setEditing, editingInfo, setGrid, generateGrid } : Edi
         setEditMode(editMode => mode)
     }
 
-    const formatEditModeText = () => {
-        if(editMode == "blocker") return "Editing Walls"
-        else if(editMode == "start") return "Editing Start Position"
-        else if(editMode == "end") return "Editing End Position"
+    const toggleMouseEventType = () => {
+        const eventType = editingInfo.mouseEventType == "click" ? "hover" : "click";
+
+        setEditing({
+            ...editingInfo,
+            mouseEventType: eventType
+        })
+    }
+
+    const callRandomizeWalls = () => {
+        const newRows = randomizeWalls(grid, grid.rowsAmount, grid.colsAmount)
+        setGrid({
+            ...grid,
+            rows: newRows
+        })
     }
 
     return(
         <div className="editContainer">
-            {formatEditModeText()}
             <div className="inputContainer">
                 <div className="buttonContainer">
+                    <button onClick={toggleMouseEventType}>Toggle Mouse Event</button>
                     <button onClick={() => toggleMode("start")}>Start</button>
                     <button onClick={() => toggleMode("end")}>End</button>
                     <button onClick={() => toggleMode("blocker")}>Wall</button>
@@ -136,6 +149,8 @@ const EditGrid = ({ grid, setEditing, editingInfo, setGrid, generateGrid } : Edi
                     </div>
                 }
             </div>
+            {!dimensionsBeingEdited && <button onClick={() => resetGrid(true)}>Remove Walls</button>}
+            {!dimensionsBeingEdited && <button onClick={callRandomizeWalls}>Randomize Walls</button>}
             {!dimensionsBeingEdited && <button onClick={toggleEditing}>Close</button>}
         </div>
 

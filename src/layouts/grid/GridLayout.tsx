@@ -1,19 +1,21 @@
 import { useEffect, useState } from 'react'
-import EditGrid from '../../components/edit-grid/EditGrid'
+import EditGrid from '../../components/graph-types/grid/edit-grid/EditGrid'
 import Grid from '../../components/graph-types/grid/Grid'
 import Header from '../../components/header/Header'
-import PathInfo from '../../components/path-info/PathInfo'
+import PathInfo from '../../components/graph-types/grid/path-info/PathInfo'
 import IGrid from '../../config/interfaces/IGrid'
 import EditingInfo from '../../config/interfaces/IEditingInfo'
 import unMarkPathSpaces from '../../helpers/unMarkPathSpaces'
 import generateBaseGridHelper from '../../helpers/generateBaseGrid'
 import bfs from '../../algorithm/bfs'
 import './gridlayout.css'
+import removeWallsHelper from '../../helpers/removeWalls'
 
 const defaultEditInfo : EditingInfo = {
     editing: false,
     notify: null,
-    mode: "blocker"
+    mode: "blocker",
+    mouseEventType: "click"
 }
 
 const GridLayout = () => {
@@ -66,9 +68,10 @@ const GridLayout = () => {
       }
     }
   
-    const resetGrid = () => {
+    const resetGrid = (removeWalls: boolean) => {
       if(grid) {
-        const unMarkedSpaces = unMarkPathSpaces(grid?.rows);
+        if(!removeWalls) unMarkPathSpaces(grid?.rows);
+        else removeWallsHelper(grid.rows)
   
         setPathFinderInfo({
           ...pathFinderInfo,
@@ -80,11 +83,11 @@ const GridLayout = () => {
   
     return (
       <div className="gridLayout">
-        {(editingInfo.editing && grid) ? <EditGrid grid={grid} setEditing={setEditingInfo} editingInfo={editingInfo} setGrid={setGrid} generateGrid={generateBaseGrid} /> : <button onClick={toggleEditing}>Edit</button>}
+        {(editingInfo.editing && grid) ? <EditGrid grid={grid} setEditing={setEditingInfo} editingInfo={editingInfo} setGrid={setGrid} generateGrid={generateBaseGrid} resetGrid={resetGrid}/> : <button onClick={toggleEditing}>Edit</button>}
         { grid && <Grid grid={grid} editingInfo={editingInfo}/> }
         {(grid && !editingInfo.editing && !pathFinderInfo.pathFound) && <button onClick={findPath}>Find Path</button>}
         {pathFinderInfo.pathFound && <PathInfo pathFinderInfo={pathFinderInfo} />}
-        {!editingInfo.editing && <button onClick={resetGrid}>Reset Grid</button>}
+        {(!editingInfo.editing && pathFinderInfo.pathFound) && <button onClick={() => resetGrid(false)}>Clear Path</button>}
       </div>
     )
 }
