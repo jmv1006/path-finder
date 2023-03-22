@@ -24,24 +24,31 @@ const Space = ( { spaceInfo, editingInfo, grid } : SpacePropTypes) => {
     }
 
     const handleStartEnd = () => {
-        console.log(spaceInfo, grid.start, grid.end)
         const startPosition = grid.start;
         const endPosition = grid.end;
 
         if(spaceInfo.row == startPosition[0] && spaceInfo.col == startPosition[1]) setIsStart(isStart => true)
         else setIsStart(isStart => false)
 
-        if (spaceInfo.row == endPosition[0] && spaceInfo.col == endPosition[1]) setIsEnd(isEnd => true)
+        if (spaceInfo.row == endPosition[0] && spaceInfo.col == endPosition[1]) {
+            setIsEnd(isEnd => true)
+        }
         else setIsEnd(isEnd => false)
     }
 
 
     return(
         <>
-            {spaceInfo.blocked && <div className="spaceBlocked" onClick={notifyEdit} />}
-            {isStart && <div className="spaceStart" onClick={notifyEdit} />}
-            {isEnd && <div className="spaceEnd" onClick={notifyEdit} />}
-            {(!spaceInfo.blocked && !isStart && !isEnd) && <div className="space" onClick={notifyEdit} />}
+            {spaceInfo.isPartOfPath ?
+                <div className="spacePath" />
+                :
+                <>
+                    {spaceInfo.blocked && <div className="spaceBlocked" onClick={notifyEdit} />}
+                    {isStart && <div className="spaceStart" onClick={notifyEdit} />}
+                    {isEnd && <div className="spaceEnd" onClick={notifyEdit} />}
+                    {(!spaceInfo.blocked && !isStart && !isEnd) && <div className="space" onClick={notifyEdit} />}
+                </>
+            }
         </>
         
     )

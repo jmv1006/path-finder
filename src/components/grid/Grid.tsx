@@ -11,6 +11,10 @@ type GridPropTypes = {
 
 const Grid = ({ grid, editingInfo } : GridPropTypes) => {
 
+    useEffect(() => {
+        console.log(grid)
+    }, [grid])
+
     const rowsMapped = grid?.rows.map((row: Array<ISpace>, index: number) => 
         <Row key={index} grid={grid} rowIndex={index} editingInfo={editingInfo}/>
     )

@@ -2,10 +2,13 @@ import { useEffect, useState } from 'react'
 import EditGrid from './components/edit-grid/EditGrid'
 import Grid from './components/grid/Grid'
 import IGrid from './config/interfaces/IGrid'
-import ISpace from './config/interfaces/ISpace'
 import EditingInfo from './config/interfaces/IEditingInfo'
 import './app.css'
 import bfs from './algorithm/bfs'
+import unMarkPathSpaces from './helpers/unMarkPathSpaces'
+import PathInfo from './components/path-info/PathInfo'
+import generateBaseGridHelper from './helpers/generateBaseGrid'
+import Header from './components/header/Header'
 
 const defaultEditInfo : EditingInfo = {
   editing: false,
@@ -16,6 +19,8 @@ const defaultEditInfo : EditingInfo = {
 function App() {
   const [grid, setGrid] = useState<IGrid | null>(null)
   const [editingInfo, setEditingInfo] = useState<EditingInfo>(defaultEditInfo)
+
+  const [pathFinderInfo, setPathFinderInfo] = useState({pathFound: false, pathLength: 0, algorithm: "bfs"});
 
   useEffect(() => {
     generateBaseGrid(10, 10);
@@ -33,52 +38,54 @@ function App() {
   }
 
   const generateBaseGrid = (rows: number, cols: number) => {
-    const generatedRows = [];
+    const newGrid: IGrid = generateBaseGridHelper(rows, cols);
 
-    for(let r = 0; r < rows; r++) {
-      const row = [];
-
-      for(let c = 0; c < cols; c++) {
-        const newSpace : ISpace = {
-          row: r,
-          col: c,
-          id: r + c,
-          blocked: false,
-        }
-        row.push(newSpace)
-      }
-
-      generatedRows.push(row)
-    }
-
-    const newGrid : IGrid = {
-      start: [0, 0],
-      end: [rows - 1, cols - 1],
-      rowsAmount: rows,
-      colsAmount: cols,
-      rows: generatedRows
-    }
+    setPathFinderInfo({
+      ...pathFinderInfo,
+      pathFound: false
+    })
 
     setGrid(grid => newGrid)
   }
 
-  const addColumn = () => {
-    if(grid != null) {
-      
+  const findPath = () => {
+    if(grid) {
+      const {updatedGridWithPath, lengthOfPath } = bfs(grid);
+      if (!updatedGridWithPath) return
+
+      setGrid({
+        ...grid, 
+        rows: updatedGridWithPath.rows
+      })
+
+      setPathFinderInfo({
+        ...pathFinderInfo, 
+        pathFound: true,
+        pathLength: lengthOfPath
+      })
     }
   }
 
+  const resetGrid = () => {
+    if(grid) {
+      const unMarkedSpaces = unMarkPathSpaces(grid?.rows);
 
-  const findPath = () => {
-    if (grid) console.log(bfs(grid))
+      setPathFinderInfo({
+        ...pathFinderInfo,
+        pathFound: false,
+        pathLength: 0
+      })
+    }
   }
-
 
   return (
     <div className="App">
-      {editingInfo.editing ? <EditGrid grid={grid} setEditing={setEditingInfo} editingInfo={editingInfo} setGrid={setGrid} /> : <button onClick={toggleEditing}>Edit</button>}
+      <Header />
+      {(editingInfo.editing && grid) ? <EditGrid grid={grid} setEditing={setEditingInfo} editingInfo={editingInfo} setGrid={setGrid} generateGrid={generateBaseGrid} /> : <button onClick={toggleEditing}>Edit</button>}
       { grid && <Grid grid={grid} editingInfo={editingInfo}/> }
-      {(grid && !editingInfo.editing) && <button onClick={findPath}>Find Path</button>}
+      {(grid && !editingInfo.editing && !pathFinderInfo.pathFound) && <button onClick={findPath}>Find Path</button>}
+      {pathFinderInfo.pathFound && <PathInfo pathFinderInfo={pathFinderInfo} />}
+      {!editingInfo.editing && <button onClick={resetGrid}>Reset Grid</button>}
     </div>
   )
 }

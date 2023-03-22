@@ -20,8 +20,12 @@ const bfs = (grid: IGrid) => {
             const path = node[1]
 
             if (position[0] == end[0] && position[1] == end[1]) {
-                console.log(path)
-                return path.length - 1
+                const updatedGrid: IGrid = {
+                    ...grid,
+                    rows: markPathSpaces(grid.rows, path)
+                }
+
+                return {updatedGridWithPath: updatedGrid, lengthOfPath: path.length}
             } 
 
             const neighbors = [[0, 1], [0, -1], [1, 0], [-1, 0]]
@@ -42,8 +46,19 @@ const bfs = (grid: IGrid) => {
         }
     }
 
-    return -1
+    return { updatedGridWithPath: null, lengthOfPath: null }
 }
+
+const markPathSpaces = (rows: Array<Array<ISpace>>, path: Array<Array<number>>) => {
+    const updatedRows = rows;
+
+    path.forEach((space: Array<number>) => {
+        updatedRows[space[0]][space[1]].isPartOfPath = true
+    })
+
+    return updatedRows
+}
+
 
 const getBlocked = (rows: Array<Array<ISpace>>) => {
     const blocked = [];

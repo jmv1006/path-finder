@@ -1,12 +1,16 @@
-
+body {
+    margin: 0;
+    background-color: #40444a;
+    color: white;
+    font-family: 'Source Sans Pro', sans-serif;
+}
 
 .App {
     width: 100vw;
     height: 100vh;
-    border: 2px solid red;
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
+    justify-content: start;
     gap: 1rem;
 }

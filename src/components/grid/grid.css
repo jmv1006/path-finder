@@ -10,32 +10,39 @@
 .space {
     width: 2.5rem;
     height: 2.5rem;
-    border: 1px solid black;
+    border: 1px solid white;
 }
 
 .spaceEditing {
     width: 2.5rem;
     height: 2.5rem;
-    border: 1px solid black;
+    border: 1px solid white;
     cursor: pointer;
 }
 
 .spaceBlocked {
     width: 2.5rem;
     height: 2.5rem;
-    border: 1px solid black;
+    border: 1px solid white;
     background-color: red;
 }
 
 .spaceStart {
     width: 2.5rem;
     height: 2.5rem;
-    border: 1px solid black;
+    border: 1px solid white;
     background-color: green;
 }
 .spaceEnd {
     width: 2.5rem;
     height: 2.5rem;
-    border: 1px solid black;
+    border: 1px solid white;
     background-color: orange;
+}
+
+.spacePath {
+    width: 2.5rem;
+    height: 2.5rem;
+    border: 1px solid white;
+    background-color: lightblue;
 }
