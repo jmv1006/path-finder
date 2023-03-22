@@ -10,7 +10,7 @@ const bfs = (grid: IGrid) => {
     const queue = [];
 
     queue.push([start, [start]]);
-    visit.add(start[0].toString().concat(start[1].toString()))
+    visit.add(convertCoordinatesToString(start[0], start[1]))
 
     while(queue.length > 0) {
         for(let i = 0; i < queue.length; i++) {
@@ -18,7 +18,7 @@ const bfs = (grid: IGrid) => {
             
             const position = node[0]
             const path = node[1]
-
+            
             if (position[0] == end[0] && position[1] == end[1]) {
                 const updatedGrid: IGrid = {
                     ...grid,
@@ -36,11 +36,12 @@ const bfs = (grid: IGrid) => {
                 const dr = position[0] + neighbor[0];
                 const dc = position[1] + neighbor[1];
 
-                if ((dr >= grid.rows.length || dr < 0) || (dc >= grid.rows[0].length || dc < 0) || (visit.has(dr.toString().concat(dc.toString()))) || (blocked.includes(dr.toString().concat(dc.toString())))) {
-                    continue
-                } else {
+                const coordinateString = convertCoordinatesToString(dr, dc);
+
+                if ((dr >= grid.rows.length || dr < 0) || (dc >= grid.rows[0].length || dc < 0) || (visit.has(coordinateString)) || (blocked.has(coordinateString))) continue
+                else {
                     queue.push([[dr, dc], path.concat([[dr, dc]])])
-                    visit.add(dr.toString().concat(dc.toString()))
+                    visit.add(coordinateString)
                 }
             }
         }
@@ -51,6 +52,7 @@ const bfs = (grid: IGrid) => {
 
 const markPathSpaces = (rows: Array<Array<ISpace>>, path: Array<Array<number>>) => {
     const updatedRows = rows;
+    path = path.slice(1, path.length - 1)
 
     path.forEach((space: Array<number>) => {
         updatedRows[space[0]][space[1]].isPartOfPath = true
@@ -59,18 +61,24 @@ const markPathSpaces = (rows: Array<Array<ISpace>>, path: Array<Array<number>>) 
     return updatedRows
 }
 
-
 const getBlocked = (rows: Array<Array<ISpace>>) => {
-    const blocked = [];
+    const blocked = new Set();
 
     for(let r = 0; r < rows.length; r++) {
         for(let c = 0; c < rows[0].length; c++) {
             const space: ISpace = rows[r][c];
-            if(space.blocked) blocked.push(r.toString().concat(c.toString()))
+            if(space.blocked) blocked.add(convertCoordinatesToString(r, c))
         }
     }
 
     return blocked
+}
+
+const convertCoordinatesToString = (row: number, col: number) => {
+    const rowString = row.toString();
+    const colString = col.toString();
+
+    return rowString + "+" + colString
 }
 
 export default bfs
