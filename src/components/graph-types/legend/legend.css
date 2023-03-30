@@ -1,0 +1,9 @@
+.legendContainer {
+    display: flex;
+    gap: 2.5rem;
+}
+
+.legendItem {
+    display: flex;
+    flex-direction: column;
+}

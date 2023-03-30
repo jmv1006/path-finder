@@ -110,15 +110,6 @@ const EditGrid = ({ grid, setEditing, editingInfo, setGrid, generateGrid, resetG
         setEditMode(editMode => mode)
     }
 
-    const toggleMouseEventType = () => {
-        const eventType = editingInfo.mouseEventType == "click" ? "hover" : "click";
-
-        setEditing({
-            ...editingInfo,
-            mouseEventType: eventType
-        })
-    }
-
     const callRandomizeWalls = () => {
         const newRows = randomizeWalls(grid, grid.rowsAmount, grid.colsAmount)
         setGrid({
@@ -127,15 +118,24 @@ const EditGrid = ({ grid, setEditing, editingInfo, setGrid, generateGrid, resetG
         })
     }
 
+    const handleModeOptionClass = (mode: string) => {
+        if(editMode == mode) return "baseButtonSelected"
+        return "baseButton"
+    }
+
     return(
         <div className="editContainer">
             <div className="inputContainer">
                 <div className="buttonContainer">
-                    <button onClick={toggleMouseEventType}>Toggle Mouse Event</button>
-                    <button onClick={() => toggleMode("start")}>Start</button>
-                    <button onClick={() => toggleMode("end")}>End</button>
-                    <button onClick={() => toggleMode("blocker")}>Wall</button>
-                    {!dimensionsBeingEdited && <button onClick={toggleDimensionsEdit}>Edit Dimensions</button>}
+                    <div className="modeContainer">
+                        <div className="modeButtonContainer">
+                            Edit Options:
+                            <button onClick={() => toggleMode("start")} className={handleModeOptionClass("start")}>Start</button>
+                            <button onClick={() => toggleMode("end")} className={handleModeOptionClass("end")}>End</button>
+                            <button onClick={() => toggleMode("blocker")} className={handleModeOptionClass("blocker")}>Wall</button>
+                        </div>
+                    </div>
+                    {!dimensionsBeingEdited && <button onClick={toggleDimensionsEdit} className="baseButton">Edit Dimensions</button>}
                 </div>
                 {dimensionsBeingEdited && 
                     <div className="dimensionsContainer">
@@ -143,15 +143,17 @@ const EditGrid = ({ grid, setEditing, editingInfo, setGrid, generateGrid, resetG
                         <form onSubmit={regenerateGrid} className="dimensionsForm">
                             <input type={"number"} placeholder="Width" value={gridDimensions.w} name="w" onChange={handleChange}/>
                             <input type={"number"} placeholder="Height" value={gridDimensions.h} name="h" onChange={handleChange}/>
-                            <button type="submit">Regenerate</button>
-                            <button onClick={toggleDimensionsEdit}>Cancel</button>
+                            <button type="submit" className="baseButton">Regenerate</button>
+                            <button onClick={toggleDimensionsEdit} className="baseButton">Cancel</button>
                         </form>
                     </div>
                 }
             </div>
-            {!dimensionsBeingEdited && <button onClick={() => resetGrid(true)}>Remove Walls</button>}
-            {!dimensionsBeingEdited && <button onClick={callRandomizeWalls}>Randomize Walls</button>}
-            {!dimensionsBeingEdited && <button onClick={toggleEditing}>Close</button>}
+            <div className="wallOptionContainer">
+                {!dimensionsBeingEdited && <button onClick={() => resetGrid(true)} className="baseButton">Remove All Walls</button>}
+                {!dimensionsBeingEdited && <button onClick={callRandomizeWalls} className="baseButton">Randomize Walls</button>}
+            </div>
+            {!dimensionsBeingEdited && <button onClick={toggleEditing} className="baseButton">Close</button>}
         </div>
 
     )

@@ -1,15 +1,15 @@
 import { useEffect, useState } from 'react'
 import EditGrid from '../../components/graph-types/grid/edit-grid/EditGrid'
 import Grid from '../../components/graph-types/grid/Grid'
-import Header from '../../components/header/Header'
 import PathInfo from '../../components/graph-types/grid/path-info/PathInfo'
 import IGrid from '../../config/interfaces/IGrid'
 import EditingInfo from '../../config/interfaces/IEditingInfo'
 import unMarkPathSpaces from '../../helpers/unMarkPathSpaces'
 import generateBaseGridHelper from '../../helpers/generateBaseGrid'
 import bfs from '../../algorithm/bfs'
-import './gridlayout.css'
 import removeWallsHelper from '../../helpers/removeWalls'
+import Legend from '../../components/graph-types/legend/Legend'
+import './gridlayout.css'
 
 const defaultEditInfo : EditingInfo = {
     editing: false,
@@ -29,6 +29,9 @@ const GridLayout = () => {
     },[])
   
     const toggleEditing = () => {
+      // removing path found from grid
+      resetGrid(false);
+
       if(editingInfo.editing === true) setEditingInfo({
         ...editingInfo,
         editing: false
@@ -83,11 +86,12 @@ const GridLayout = () => {
   
     return (
       <div className="gridLayout">
-        {(editingInfo.editing && grid) ? <EditGrid grid={grid} setEditing={setEditingInfo} editingInfo={editingInfo} setGrid={setGrid} generateGrid={generateBaseGrid} resetGrid={resetGrid}/> : <button onClick={toggleEditing}>Edit</button>}
+        {(editingInfo.editing && grid) ? <EditGrid grid={grid} setEditing={setEditingInfo} editingInfo={editingInfo} setGrid={setGrid} generateGrid={generateBaseGrid} resetGrid={resetGrid}/> : <button onClick={toggleEditing} className="baseButton">Edit</button>}
         { grid && <Grid grid={grid} editingInfo={editingInfo}/> }
-        {(grid && !editingInfo.editing && !pathFinderInfo.pathFound) && <button onClick={findPath}>Find Path</button>}
+        {grid && <Legend />}
+        {(grid && !editingInfo.editing && !pathFinderInfo.pathFound) && <button onClick={findPath} className="baseButton">Find Path</button>}
         {pathFinderInfo.pathFound && <PathInfo pathFinderInfo={pathFinderInfo} />}
-        {(!editingInfo.editing && pathFinderInfo.pathFound) && <button onClick={() => resetGrid(false)}>Clear Path</button>}
+        {(!editingInfo.editing && pathFinderInfo.pathFound) && <button onClick={() => resetGrid(false)} className="baseButton">Clear Path</button>}
       </div>
     )
 }
